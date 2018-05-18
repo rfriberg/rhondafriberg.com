@@ -1,90 +1,65 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta name='viewport' content='width=device-width, initial-scale=1'>
     <meta charset='UTF-8'>
-    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <title>Rhonda Friberg</title>
+
     <link href="https://fonts.googleapis.com/css?family=Indie+Flower|Tajawal" rel="stylesheet">
+    <link href="./assets/main.css" rel="stylesheet">
+
     <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/brands.js" integrity="sha384-G/XjSSGjG98ANkPn82CYar6ZFqo7iCeZwVZIbNWhAmvCF2l+9b5S21K4udM7TGNu" crossorigin="anonymous"></script>
     <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js" integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY" crossorigin="anonymous"></script>
-    <style>
-    html, body {
-      padding: 0;
-      margin: 0;
-      font-family: 'Tajawal', sans-serif;
-    }
-
-    body {
-      background-color: #ffffff;
-    }
-    .content {
-      position: absolute;
-      top: 25vh;
-      left: 20vw;
-      width: 50vw;
-      color: #444;
-    }
-    h1 {
-      font-size: 42px;
-      font-family: 'Indie Flower', cursive;
-      margin: 0;
-    }
-    p {
-      font-size: 20px;
-      line-height: 32px;
-    }
-    a {
-      color: #666;
-      text-decoration: none;
-      border-bottom: 1px solid #b4b4b4;
-    }
-    a:hover {
-      color: #ff51da;
-      border-bottom: 1px solid #ff51da;
-    }
-    canvas {
-      width: 100vh;
-      height: 100vh;
-    }
-    </style>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
   </head>
   <body>
     <div class="content">
       <h1>Hi. I'm Rhonda.</h1>
       <p><a href="https://github.com/rfriberg" title="@rfriberg on Github">I build maps, tools, and apps for the web.</a> <a href="https://medium.com/postzen/one-minute-map-2cae457ae00e" title="Mapzen blog post">I use the Oxford comma</a>. I reposition Roomba when she asks and <a href="https://www.instagram.com/rjfriberg/" title="@rjfriberg on Instagram... I keep this shit locked down tho">try to raise kind humans</a>.  I believe that diversity, inclusion, and accessibility are important.</p>
       <p>Let's stay in touch.</p>
-      <p>
-        <a href="https://www.linkedin.com/in/rhondafriberg/" title="@rhondafriberg on LinkedIn">LinkedIn</a> |
-        <a href="https://github.com/rfriberg" title="@rfriberg on Github">Github</a> |
-        <a href="https://twitter.com/rhonda_friberg" title="@rhonda_friberg on Twitter">Twitter</a> |
-        <a href="https://www.instagram.com/rjfriberg/" title="@rjfriberg on Instagram... you're gonna need to know me first"><i class="fab fa-font-awesome fa-2x"></i></a>
-      </p>
     </div>
+    <div class="footer">
+      <div class="footer-content">
+        <div class="column footer-copyright">
+          @ Rhonda Friberg 2018
+        </div>
+        <div class="column footer-links">
+          <a href="https://www.linkedin.com/in/rhondafriberg/" title="@rhondafriberg on LinkedIn" alt="LinkedIn" class="icon"><i class="fab fa-linkedin fa-2x"></i></a>
+          <a href="https://github.com/rfriberg" title="@rfriberg on Github" alt="Github" class="icon"><i class="fab fa-github fa-2x"></i></a>
+          <a href="https://twitter.com/rhonda_friberg" title="@rhonda_friberg on Twitter" alt="Twitter" class="icon"><i class="fab fa-twitter fa-2x"></i></a>
+          <a href="https://www.instagram.com/rjfriberg/" title="@rjfriberg on Instagram... you're gonna need to know me first" alt="Instagram" class="icon"><i class="fab fa-instagram fa-2x"></i></a>
+        </div>
+        <div class="column footer-controls">
+          <a href="#" id="start" alt="Start animation">Make this page fancy</a>
+        </div>
+      </div>
+    </div>
+    <canvas></canvas>
   </body>
 </html>
 
 <script>
-console.log('Dot animation is based on https://bl.ocks.org/alizauf/0a0a08a6e747df75b10902588720a152 by Aliza Aufrichtig.');
-// canvas settings
-const width = 1600;
-const height = 1200;
-
 // animation settings
 const duration = 10000;
+const eases = [ d3.easePolyIn ]; // d3.easeSin // d3.easeBack // d3.easeQuad
+let animating = false;
 
-//different ease options
-// d3.easeSin // d3.easeBack // d3.easeQuad
-const eases = [ d3.easePolyIn ];
 let timer;
+let layouts;
+let canvasWidth, canvasHeight;
 let currLayout = 1;
 let currEase = 0;
 
+const canvas = d3.select('canvas')
+const ctx = canvas.node().getContext('2d');
+
+// Attribution, of sorts
+console.log('Dot animation is based on https://bl.ocks.org/alizauf/0a0a08a6e747df75b10902588720a152 by Aliza Aufrichtig.');
+
 //draw each point to the canvas as a circle
 function draw( t, points ) {
-
   ctx.save();
-  ctx.clearRect( 0, 0, width, height );
+  ctx.clearRect( 0, 0, canvasWidth, canvasHeight );
   for (let i = 0; i < points.length; ++i) {
     const point = points[i];
     const radius = 2;
@@ -99,8 +74,8 @@ function draw( t, points ) {
   ctx.restore();
 }
 
-
 function animate( oldPoints, newPoints, layouts, eases ) {
+  animating = true;
   // store the source position
   const points = [];
   const shuffledNewPoints = d3.shuffle( newPoints );
@@ -141,19 +116,33 @@ function animate( oldPoints, newPoints, layouts, eases ) {
   });
 }
 
-const screenScale = window.devicePixelRatio || 1;
-const canvas = d3.select('body').append('canvas')
-  .attr( 'width', width * screenScale)
-  .attr( 'height', height * screenScale )
-  .style( 'width', `${width}px` )
-  .style( 'height', `${height}px` )
+function stopAnimation() {
+  animating = false;
+  if (timer) {
+    timer.stop();
+  }
+}
 
-canvas.node().getContext( '2d' ).scale( screenScale, screenScale );
+function resizeCanvas() {
+  if (!canvas) return;
 
-const ctx = canvas.node().getContext( '2d' );
+  const bbox = canvas.node().getBoundingClientRect();
+  canvasWidth = bbox.width;
+  canvasHeight = bbox.height;
+  canvas
+    .attr( 'width', canvasWidth )
+    .attr( 'height', canvasHeight )
+}
 
+function startAnimation(e) {
+  stopAnimation();
+  resizeCanvas();
+  animate( layouts[0], layouts[1], layouts, eases );
+}
+
+// Load data and wait
 d3.json( "./data/coordinates.json", data => {
-  const layouts = [];
+  layouts = [];
   Object.keys( data ).forEach( key => {
     let layout = [];
     data[ key ].forEach( point => {
@@ -165,6 +154,28 @@ d3.json( "./data/coordinates.json", data => {
     layouts.push( layout );
   });
 
-  animate( layouts[0], layouts[1], layouts, eases );
+  // Begin animation on load
+  // startAnimation();
 });
+
+// Set up event click
+document.querySelector("#start").addEventListener("click", function(event) {
+  event.preventDefault();
+  console.log(this.innerText)
+
+  if (animating) {
+    stopAnimation();
+    this.innerText = 'Start animation';
+  } else {
+    startAnimation();
+    this.innerText = 'Stop animation';
+  }
+}, false);
+
+// Set up resize listener
+window.onresize = function () {
+  'use strict';
+  stopAnimation();
+  resizeCanvas();
+};
 </script>
