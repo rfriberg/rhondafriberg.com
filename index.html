@@ -161,8 +161,6 @@ d3.json( "./data/coordinates.json", data => {
 // Set up event click
 document.querySelector("#start").addEventListener("click", function(event) {
   event.preventDefault();
-  console.log(this.innerText)
-
   if (animating) {
     stopAnimation();
     this.innerText = 'Start animation';
