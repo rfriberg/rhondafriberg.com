@@ -29,7 +29,8 @@ a {
   text-decoration: none;
   border-bottom: 1px solid #b4b4b4;
 }
-a:hover {
+a:hover,
+a:focus {
   color: #ff51da;
   border-bottom: 1px solid #ff51da;
 }
@@ -47,9 +48,11 @@ a:hover {
 }
 .footer a {
   color: #c9bbc9;
+  border: none;
 }
-.footer a:hover {
-  color: #f991e3;
+.footer a:hover,
+.footer a:focus {
+  color: #fff;
 }
 .footer-content {
   position: relative;
@@ -70,15 +73,16 @@ a:hover {
   text-align: center;
 }
 .icon {
-  border: none;
   font-size: 21px;
   margin: 0 0.6rem;
 }
-.icon:hover {
-  border: none;
-}
 .footer-controls {
   text-align: right;
+}
+#start {
+  font-size: 0.8rem;
+  display: inline-block;
+  margin-top: 0.5rem;
 }
 canvas {
   position: absolute;
@@ -109,9 +113,7 @@ canvas {
   }
   .footer-controls {
     display: inline-block;
-    text-align: right;
   }
-
   .icon {
     font-size: 16px;
     margin: 0 0.35rem;
