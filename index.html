@@ -21,7 +21,7 @@
     <div class="footer">
       <div class="footer-content">
         <div class="column footer-copyright">
-          @ Rhonda Friberg 2018
+          @ Rhonda Friberg <span class="year">2018</span>
         </div>
         <div class="column footer-links">
           <a href="https://www.linkedin.com/in/rhondafriberg/" title="@rhondafriberg on LinkedIn" alt="LinkedIn" class="icon"><i class="fab fa-linkedin fa-2x"></i></a>
@@ -39,6 +39,11 @@
 </html>
 <script src="https://d3js.org/d3.v4.min.js"></script>
 <script>
+
+// Update copyright year
+const yearSpan = document.querySelector(".year");
+yearSpan.textContent = new Date().getFullYear();
+
 // animation settings
 const duration = 10000;
 const eases = [ d3.easePolyIn ]; // d3.easeSin // d3.easeBack // d3.easeQuad
